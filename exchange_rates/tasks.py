@@ -36,7 +36,7 @@ def get_exchange_rates():
             if date == date.today():
                 try:
                     exchange_rates = DailyExchangeRates.objects.get_or_create(date=date, usd_rate=usd_value,
-                                                                                  eur_rate=eur_value, rub_rate=rub_value)
+                                                                              eur_rate=eur_value, rub_rate=rub_value)
                     exchange_rates.save()
                 except Exception as e:
                     print("Ошибка при получении курсов валют.")
