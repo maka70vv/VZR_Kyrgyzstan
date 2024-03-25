@@ -21,5 +21,5 @@ class UserSerializer(serializers.ModelSerializer):
             user.is_travel_agency = True
             user.save()
         except TravelAgency.DoesNotExist:
-            return "Туристическое агенство не зарегистрированно в системе"
+            pass
         return user

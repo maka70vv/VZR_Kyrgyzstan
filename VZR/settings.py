@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     "discounts",
     'django_celery_beat',
     "exchange_rates",
-    "django_crontab"
+    "django_crontab",
+    "countries"
 ]
 
 MIDDLEWARE = [

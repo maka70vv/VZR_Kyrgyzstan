@@ -1,9 +1,15 @@
 from django.contrib import admin
 
-from countries.models import Country
+from countries.models import Country, PriceByCountry
 
 
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'currency')
-    search_fields = ('name')
+    search_fields = ('name',)
+
+
+@admin.register(PriceByCountry)
+class PriceByCountryAdmin(admin.ModelAdmin):
+    search_fields = ('country__name',)
+    list_display = ('country', 'insurance_summ')
+    list_filter = ('insurance_summ', 'currency')

@@ -1,6 +1,7 @@
 from django.db import models
 
-from countries.models import Country
+from countries.models import Country, PriceByCountry
+from travel_agency.models import TravelAgency
 
 
 class BuyPolicy(models.Model):
@@ -18,6 +19,7 @@ class BuyPolicy(models.Model):
     start_date = models.DateField(verbose_name="Дата начала действия полиса")
     end_date = models.DateField(verbose_name="Дата окончания действия полиса")
     territory_and_currency = models.ForeignKey(Country, verbose_name="Территория страхования", on_delete=models.CASCADE)
+    insurance_summ = models.ForeignKey(PriceByCountry, verbose_name="Страховая сумма", on_delete=models.CASCADE)
     purpose = models.CharField(max_length=50, verbose_name="Цель поездки",
                                choices=(("1", "Деловая"), ("2", "Туризм"), ("3", "Гостевая"), ("4", "Спорт"),
                                         ("5", "Воссоединение семьи"), ("6", "Лечение"), ("7", "Стажировка")))
@@ -30,6 +32,11 @@ class BuyPolicy(models.Model):
                                                max_digits=2, default=0)
     commission_summ = models.DecimalField(verbose_name="Сумма комиссии", decimal_places=2, max_digits=2, default=0)
     profit_summ = models.DecimalField(verbose_name="Сумма дохода СК", decimal_places=2, max_digits=2, default=0)
+    travel_agency = models.ForeignKey(TravelAgency, on_delete=models.SET_NULL, null=True, verbose_name="Тур. агенство")
+    skiing = models.BooleanField(verbose_name="занятие горнолыжным спортом", default=False)
+    sport_activities = models.BooleanField(verbose_name="занятие профессиональным или любительским спортом",
+                                           default=False)
+    dangerous_activities = models.BooleanField(verbose_name="занятие опасными видами деятельности", default=False)
 
     def __str__(self):
         return self.customer_inn
