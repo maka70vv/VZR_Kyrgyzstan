@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'django_celery_beat',
     "exchange_rates",
     "django_crontab",
-    "countries"
+    "countries",
+    "buy_policy"
 ]
 
 MIDDLEWARE = [
@@ -208,6 +209,7 @@ SIMPLE_JWT = {
     "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
     "JTI_CLAIM": "jti",
     "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=3),
     "SLIDING_TOKEN_LIFETIME": timedelta(hours=3),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
     "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",

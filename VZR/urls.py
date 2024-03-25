@@ -67,4 +67,5 @@ urlpatterns = [
         TokenVerifyView.as_view(),
         name="token_verify",
     ),
+    path('api/', include("buy_policy.urls"))
 ]

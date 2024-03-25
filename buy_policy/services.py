@@ -49,4 +49,3 @@ def calculate_insurance_price(birth_date: date, skiing: bool, sport_activities: 
     validity_period = (end_date - start_date).days
     price = calculate_price(validity_period, coefficient, insurance_summ)
     return price
-              
