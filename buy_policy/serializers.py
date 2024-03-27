@@ -5,7 +5,7 @@ from buy_policy.models import BuyPolicy
 
 
 class BuyPolicySerializer(serializers.ModelSerializer):
-    ok = serializers.BooleanField(required=False, default=False)
+    ok = serializers.BooleanField(required=False, default=False, write_only=True)
     message = serializers.CharField(required=False, max_length=255, allow_blank=True, read_only=True)
     _ok_value = None
 
@@ -22,7 +22,7 @@ class BuyPolicySerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        self._ok_value = validated_data.pop('ok', False)
+        self._ok_value = validated_data.pop('ok')
         return super().create(validated_data)
 
 

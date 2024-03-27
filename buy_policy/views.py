@@ -17,41 +17,35 @@ class BuyPolicyView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         travel_agency = self.request.user.travel_agency
-        serializer = self.get_serializer(data=self.request.data, many=isinstance(self.request.data, list))
         serializer.is_valid(raise_exception=True)
+        birth_date = serializer.validated_data.get('birth_date')
+        skiing = bool(serializer.validated_data.get('skiing'))
+        sport_activities = bool(serializer.validated_data.get('sport_activities'))
+        dangerous_activities = bool(serializer.validated_data.get('dangerous_activities'))
+        insurance_summ = serializer.validated_data.get('insurance_summ')
+        start_date = serializer.validated_data.get('start_date')
+        end_date = serializer.validated_data.get('end_date')
+        exchange_rates = DailyExchangeRates.objects.get(date=date.today())
+        travel_agency_commission = travel_agency.commission
+        insured = 1
+        try:
+            calculate = save_insurance_price(birth_date, skiing, sport_activities, dangerous_activities,
+                                             start_date, end_date, insurance_summ, exchange_rates, insured,
+                                             travel_agency_commission)
 
-        for data in serializer.validated_data:  # Итерируемся по каждому словарю в списке данных
+            serializer.validated_data['ok'] = True
+            serializer.save(
+                price_exchange=Decimal(calculate['price_exchange']),
+                price_with_taxes_kgs=Decimal(calculate['price_kgs']),
+                taxes_summ=Decimal(calculate['taxes_summ']),
+                price_without_taxes_kgs=Decimal(calculate['price_without_taxes']),
+                commission_summ=Decimal(calculate['commission_summ']),
+                profit_summ=Decimal(calculate['profit']),
+                travel_agency=travel_agency
+            )
 
-            try:
-
-                birth_date = serializer.validated_data.get('birth_date')
-                skiing = bool(serializer.validated_data.get('skiing'))
-                sport_activities = bool(serializer.validated_data.get('sport_activities'))
-                dangerous_activities = bool(serializer.validated_data.get('dangerous_activities'))
-                insurance_summ = serializer.validated_data.get('insurance_summ')
-                start_date = serializer.validated_data.get('start_date')
-                end_date = serializer.validated_data.get('end_date')
-                exchange_rates = DailyExchangeRates.objects.get(date=date.today())
-                travel_agency_commission = travel_agency.commission
-                insured = len(data)
-
-                calculate = save_insurance_price(birth_date, skiing, sport_activities, dangerous_activities,
-                                                 start_date, end_date, insurance_summ, exchange_rates, insured,
-                                                 travel_agency_commission)
-
-                serializer.validated_data['ok'] = True
-                serializer.save(
-                    price_exchange=Decimal(calculate['price_exchange']),
-                    price_with_taxes_kgs=Decimal(calculate['price_kgs']),
-                    taxes_summ=Decimal(calculate['taxes_summ']),
-                    price_without_taxes_kgs=Decimal(calculate['price_without_taxes']),
-                    commission_summ=Decimal(calculate['commission_summ']),
-                    profit_summ=Decimal(calculate['profit']),
-                    travel_agency=travel_agency
-                )
-
-            except ValueError as e:
-                return Response(serializer.validated_data, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError as e:
+            return Response(serializer.validated_data, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CalculatePriceView(generics.CreateAPIView):
