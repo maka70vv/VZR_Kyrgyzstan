@@ -64,9 +64,9 @@ def calculate_taxes(price: float):
     return round(price * 0.3, 2)
 
 
-def calculate_price_without_taxes(price: float, taxes: float) -> float:
-    price_without_taxes = price - taxes
-    return round(price_without_taxes, 2)
+def calculate_price_with_taxes(price: float, taxes: float) -> float:
+    price_with_taxes = price + taxes
+    return round(price_with_taxes, 2)
 
 
 def calculate_commission_summ(price: float, commission: int) -> float:
@@ -87,15 +87,17 @@ def save_insurance_price(birth_date: date, skiing: bool, sport_activities: bool,
     price = calculate_price(validity_period, coefficient, insurance_summ)
     price_kgs = convert_to_kgs(price, insurance_summ, exchange_rates)
     taxes_summ = calculate_taxes(price_kgs)
-    price_without_taxes = calculate_price_without_taxes(price_kgs, taxes_summ)
-    commission_summ = calculate_commission_summ(price, commission)
-    profit = calculate_profit(price_without_taxes, commission_summ)
+    taxes_summ_exchange = calculate_taxes(price)
+    price_with_taxes = calculate_price_with_taxes(price_kgs, taxes_summ)
+    price_exchange = calculate_price_with_taxes(price, taxes_summ_exchange)
+    commission_summ = calculate_commission_summ(price_kgs, commission)
+    profit = calculate_profit(price_kgs, commission_summ)
     prices = {
         "age": age,
-        "price_exchange": price,
-        "price_kgs": price_kgs,
+        "price_exchange": price_exchange,
+        "price_kgs": price_with_taxes,
         "taxes_summ": taxes_summ,
-        "price_without_taxes": price_without_taxes,
+        "price_without_taxes": price_kgs,
         "commission_summ": commission_summ,
         "profit": profit
     }
@@ -109,8 +111,12 @@ def calculate_insurance_price(birth_date: date, skiing: bool, sport_activities: 
     validity_period = (end_date - start_date).days
     price = calculate_price(validity_period, coefficient, insurance_summ)
     price_kgs = convert_to_kgs(price, insurance_summ, exchange_rates)
+    taxes_summ = calculate_taxes(price_kgs)
+    taxes_summ_exchange = calculate_taxes(price)
+    price_with_taxes = calculate_price_with_taxes(price_kgs, taxes_summ)
+    price_exchange = calculate_price_with_taxes(price, taxes_summ_exchange)
     prices = {
-        "price_exchange": price,
-        "price_kgs": price_kgs
+        "price_exchange": price_exchange,
+        "price_kgs": price_with_taxes
     }
     return prices
