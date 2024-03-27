@@ -37,6 +37,8 @@ class BuyPolicy(models.Model):
     sport_activities = models.BooleanField(verbose_name="занятие профессиональным или любительским спортом",
                                            default=False)
     dangerous_activities = models.BooleanField(verbose_name="занятие опасными видами деятельности", default=False)
+    is_lapsed = models.BooleanField(verbose_name="Испорчен", default=False)
+    sale_date = models.DateField(verbose_name="Дата продажи", null=True, blank=True, auto_now_add=True)
 
     def __str__(self):
         return self.customer_inn
