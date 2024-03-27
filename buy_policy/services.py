@@ -7,7 +7,8 @@ def calculate_age(birth_date: date) -> int:
     return age
 
 
-def calculate_coefficient(age: int, skiing: bool, sport_activities: bool, dangerous_activities: bool) -> float:
+def calculate_coefficient(age: int, skiing: bool, sport_activities: bool, dangerous_activities: bool,
+                          insured: int) -> float:
     if 60 <= age < 65 or 2 <= age < 3:
         coefficient = 2
     elif 65 <= age < 70:
@@ -23,6 +24,8 @@ def calculate_coefficient(age: int, skiing: bool, sport_activities: bool, danger
         coefficient *= 2
     if sport_activities or dangerous_activities:
         coefficient *= 2.5
+    if insured >= 7:
+        coefficient *= 0.90
 
     return coefficient
 
@@ -42,10 +45,72 @@ def calculate_price(validity_period: int, coefficient: float, insurance_summ) ->
         return insurance_summ.price_up_to_365days * coefficient * validity_period
 
 
-def calculate_insurance_price(birth_date: date, skiing: bool, sport_activities: bool, dangerous_activities: bool,
-                              start_date: date, end_date: date, insurance_summ) -> float:
+def convert_to_kgs(price: float, insurance_summ, exchange_rates) -> float:
+    if insurance_summ.currency == 'EUR':
+        eur_rate = float(exchange_rates.eur_rate)
+        price_kgs = round(price * eur_rate, 2)
+    elif insurance_summ.currency == 'USD':
+        usd_rate = float(exchange_rates.usd_rate)
+        price_kgs = round(price * usd_rate, 2)
+    elif insurance_summ.currency == 'RUB':
+        rub_rate = float(exchange_rates.rub_rate)
+        price_kgs = round(price * rub_rate, 2)
+    else:
+        price_kgs = round(price, 2)
+    return price_kgs
+
+
+def calculate_taxes(price: float):
+    return round(price * 0.3, 2)
+
+
+def calculate_price_without_taxes(price: float, taxes: float) -> float:
+    price_without_taxes = price - taxes
+    return round(price_without_taxes, 2)
+
+
+def calculate_commission_summ(price: float, commission: int) -> float:
+    commission_summ = round(price * (commission / 2), 2)
+    return commission_summ
+
+
+def calculate_profit(price: float, commission_summ: float) -> float:
+    profit_summ = price - commission_summ
+    return profit_summ
+
+
+def save_insurance_price(birth_date: date, skiing: bool, sport_activities: bool, dangerous_activities: bool,
+                         start_date: date, end_date: date, insurance_summ, exchange_rates, insured, commission) -> float:
     age = calculate_age(birth_date)
-    coefficient = calculate_coefficient(age, skiing, sport_activities, dangerous_activities)
+    coefficient = calculate_coefficient(age, skiing, sport_activities, dangerous_activities, insured)
     validity_period = (end_date - start_date).days
     price = calculate_price(validity_period, coefficient, insurance_summ)
-    return price
+    price_kgs = convert_to_kgs(price, insurance_summ, exchange_rates)
+    taxes_summ = calculate_taxes(price_kgs)
+    price_without_taxes = calculate_price_without_taxes(price_kgs, taxes_summ)
+    commission_summ = calculate_commission_summ(price, commission)
+    profit = calculate_profit(price_without_taxes, commission_summ)
+    prices = {
+        "age": age,
+        "price_exchange": price,
+        "price_kgs": price_kgs,
+        "taxes_summ": taxes_summ,
+        "price_without_taxes": price_without_taxes,
+        "commission_summ": commission_summ,
+        "profit": profit
+    }
+    return prices
+
+
+def calculate_insurance_price(birth_date: date, skiing: bool, sport_activities: bool, dangerous_activities: bool,
+                              start_date: date, end_date: date, insurance_summ, exchange_rates, insured) -> float:
+    age = calculate_age(birth_date)
+    coefficient = calculate_coefficient(age, skiing, sport_activities, dangerous_activities, insured)
+    validity_period = (end_date - start_date).days
+    price = calculate_price(validity_period, coefficient, insurance_summ)
+    price_kgs = convert_to_kgs(price, insurance_summ, exchange_rates)
+    prices = {
+        "price_exchange": price,
+        "price_kgs": price_kgs
+    }
+    return prices
