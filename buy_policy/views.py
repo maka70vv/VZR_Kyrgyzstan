@@ -5,6 +5,7 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from buy_policy.models import BuyPolicy
 from buy_policy.serializers import BuyPolicySerializer, CalculatePolicyPriceSerializer
 from buy_policy.services import calculate_insurance_price, save_insurance_price
 from countries.models import PriceByCountry, Country
@@ -14,6 +15,7 @@ from exchange_rates.models import DailyExchangeRates
 class BuyPolicyView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = BuyPolicySerializer
+    queryset = BuyPolicy.objects.all()
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -35,6 +37,7 @@ class BuyPolicyView(generics.CreateAPIView):
             exchange_rates = DailyExchangeRates.objects.get(date=date.today())
             travel_agency = self.request.user.travel_agency
             travel_agency_commission = travel_agency.commission
+            territory_and_currency = serializer.validated_data.get('territory_and_currency')
             insured = len(data)
 
             try:
@@ -50,11 +53,12 @@ class BuyPolicyView(generics.CreateAPIView):
                     commission_summ=Decimal(calculate['commission_summ']),
                     profit_summ=Decimal(calculate['profit']),
                     travel_agency=travel_agency,
-                    **item
+                    territory_and_currency=territory_and_currency,
+                    insurance_summ=insurance_summ,
                 )
-                responses.append(serializer.validated_data)
+                responses.append(serializer.data)
             except ValueError as e:
-                responses.append({"detail": str(e)})
+                responses.append({"message": str(e)})
 
         return Response(responses, status=status.HTTP_200_OK)
 
