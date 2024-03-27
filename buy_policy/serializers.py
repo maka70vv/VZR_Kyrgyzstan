@@ -13,14 +13,6 @@ class BuyPolicySerializer(serializers.ModelSerializer):
         model = BuyPolicy
         fields = '__all__'
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        ok = self._ok_value if self._ok_value is not None else data.get('ok', False)
-        if not ok:
-            data['message'] = 'Невозможно застраховать клиента, так как возраст >= 70 лет или меньше 2 лет'
-            return {'message': data['message']}
-        return data
-
     def create(self, validated_data):
         self._ok_value = validated_data.pop('ok')
         return super().create(validated_data)
