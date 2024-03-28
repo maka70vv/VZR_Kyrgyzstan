@@ -11,6 +11,7 @@ from buy_policy.serializers import BuyPolicySerializer, CalculatePolicyPriceSeri
 from buy_policy.services import calculate_insurance_price, save_insurance_price
 from countries.models import PriceByCountry
 from exchange_rates.models import DailyExchangeRates
+from mail_users.models import MailUser
 
 
 class BuyPolicyView(generics.CreateAPIView):
@@ -25,6 +26,7 @@ class BuyPolicyView(generics.CreateAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         responses = []
+        email_users = MailUser.objects.all()
         for item in data:
             serializer = self.get_serializer(data=item)
             serializer.is_valid(raise_exception=True)
@@ -58,7 +60,7 @@ class BuyPolicyView(generics.CreateAPIView):
                     insurance_summ=insurance_summ,
                 )
                 responses.append(serializer.data)
-                send_notification_on_save(travel_agency.name, )
+                send_notification_on_save(travel_agency.name, email_users)
             except ValueError as e:
                 responses.append({"message": str(e)})
 
