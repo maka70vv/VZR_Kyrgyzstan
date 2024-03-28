@@ -10,3 +10,12 @@ class Report(models.Model):
 
     def __str__(self):
         return self.travel_agency.name
+
+
+class Invoice(models.Model):
+    travel_agency = models.ForeignKey(TravelAgency, on_delete=models.SET_NULL, null=True, verbose_name="Турагенство")
+    file = models.FileField(upload_to='invoice/', verbose_name="Счет на оплату")
+    date = models.DateField(verbose_name="Дата формирования", auto_now_add=True)
+
+    def __str__(self):
+        return self.travel_agency.name

@@ -5,7 +5,7 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from buy_policy.mail import send_notification_on_save, send_notification_to_user_on_save
+from mail_users.mail import send_notification_on_save, send_notification_to_user_on_save
 from buy_policy.models import BuyPolicy
 from buy_policy.serializers import BuyPolicySerializer, CalculatePolicyPriceSerializer
 from buy_policy.services import calculate_insurance_price, save_insurance_price
