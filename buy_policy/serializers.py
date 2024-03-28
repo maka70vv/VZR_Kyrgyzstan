@@ -5,25 +5,9 @@ from buy_policy.models import BuyPolicy
 
 
 class BuyPolicySerializer(serializers.ModelSerializer):
-    ok = serializers.BooleanField(required=False, default=False)
-    message = serializers.CharField(required=False, max_length=255, allow_blank=True, read_only=True)
-    _ok_value = None
-
     class Meta:
         model = BuyPolicy
         fields = '__all__'
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        ok = self._ok_value if self._ok_value is not None else data.get('ok', False)
-        if not ok:
-            data['message'] = 'Невозможно застраховать клиента, так как возраст >= 70 лет или меньше 2 лет'
-            return {'message': data['message']}
-        return data
-
-    def create(self, validated_data):
-        self._ok_value = validated_data.pop('ok', False)
-        return super().create(validated_data)
 
 
 class CalculatePolicyPriceSerializer(serializers.Serializer):

@@ -5,6 +5,8 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from buy_policy.mail import send_notification_on_save
+from buy_policy.models import BuyPolicy
 from buy_policy.serializers import BuyPolicySerializer, CalculatePolicyPriceSerializer
 from buy_policy.services import calculate_insurance_price, save_insurance_price
 from countries.models import PriceByCountry
@@ -14,32 +16,36 @@ from exchange_rates.models import DailyExchangeRates
 class BuyPolicyView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = BuyPolicySerializer
+    queryset = BuyPolicy.objects.all()
 
-    def perform_create(self, serializer):
-        travel_agency = self.request.user.travel_agency
-        serializer = self.get_serializer(data=self.request.data, many=isinstance(self.request.data, list))
-        serializer.is_valid(raise_exception=True)
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        if not isinstance(data, list):
+            return Response({"message": "Request body must be a list of dictionaries"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        for data in serializer.validated_data:  # Итерируемся по каждому словарю в списке данных
+        responses = []
+        for item in data:
+            serializer = self.get_serializer(data=item)
+            serializer.is_valid(raise_exception=True)
+            birth_date = serializer.validated_data.get('birth_date')
+            skiing = bool(serializer.validated_data.get('skiing'))
+            sport_activities = bool(serializer.validated_data.get('sport_activities'))
+            dangerous_activities = bool(serializer.validated_data.get('dangerous_activities'))
+            insurance_summ = serializer.validated_data.get('insurance_summ')
+            start_date = serializer.validated_data.get('start_date')
+            end_date = serializer.validated_data.get('end_date')
+            exchange_rates = DailyExchangeRates.objects.get(date=date.today())
+            travel_agency = self.request.user.travel_agency
+            travel_agency_commission = travel_agency.commission
+            territory_and_currency = serializer.validated_data.get('territory_and_currency')
+            insured = len(data)
 
             try:
-
-                birth_date = serializer.validated_data.get('birth_date')
-                skiing = bool(serializer.validated_data.get('skiing'))
-                sport_activities = bool(serializer.validated_data.get('sport_activities'))
-                dangerous_activities = bool(serializer.validated_data.get('dangerous_activities'))
-                insurance_summ = serializer.validated_data.get('insurance_summ')
-                start_date = serializer.validated_data.get('start_date')
-                end_date = serializer.validated_data.get('end_date')
-                exchange_rates = DailyExchangeRates.objects.get(date=date.today())
-                travel_agency_commission = travel_agency.commission
-                insured = len(data)
-
                 calculate = save_insurance_price(birth_date, skiing, sport_activities, dangerous_activities,
                                                  start_date, end_date, insurance_summ, exchange_rates, insured,
                                                  travel_agency_commission)
 
-                serializer.validated_data['ok'] = True
                 serializer.save(
                     price_exchange=Decimal(calculate['price_exchange']),
                     price_with_taxes_kgs=Decimal(calculate['price_kgs']),
@@ -47,11 +53,16 @@ class BuyPolicyView(generics.CreateAPIView):
                     price_without_taxes_kgs=Decimal(calculate['price_without_taxes']),
                     commission_summ=Decimal(calculate['commission_summ']),
                     profit_summ=Decimal(calculate['profit']),
-                    travel_agency=travel_agency
+                    travel_agency=travel_agency,
+                    territory_and_currency=territory_and_currency,
+                    insurance_summ=insurance_summ,
                 )
-
+                responses.append(serializer.data)
+                send_notification_on_save(travel_agency.name, )
             except ValueError as e:
-                return Response(serializer.validated_data, status=status.HTTP_400_BAD_REQUEST)
+                responses.append({"message": str(e)})
+
+        return Response(responses, status=status.HTTP_200_OK)
 
 
 class CalculatePriceView(generics.CreateAPIView):
@@ -83,3 +94,29 @@ class CalculatePriceView(generics.CreateAPIView):
             except ValueError as e:
                 response_data.append({'message': str(e)})
         return Response(response_data, status=status.HTTP_200_OK)
+
+
+class PoliciesByTravelAgencyView(generics.ListAPIView):
+    serializer_class = BuyPolicySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        travel_agency = self.request.user.travel_agency
+        return BuyPolicy.objects.filter(travel_agency=travel_agency)
+
+
+class DestroyPolicyView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = BuyPolicySerializer
+    queryset = BuyPolicy.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        travel_agency = self.request.user.travel_agency
+        if (instance.sale_date - date.today()).days <= 3 and instance.travel_agency == travel_agency:
+            instance.is_lapsed = True
+            instance.save()
+            return Response({'message': 'Полис помечен как испорченный'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'Невозможно удалить полис. С момента продажи прошло более 3 дней'},
+                            status=status.HTTP_400_BAD_REQUEST)
