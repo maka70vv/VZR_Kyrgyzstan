@@ -1,5 +1,7 @@
 from datetime import date
 
+from django.core.mail import send_mail
+
 
 def calculate_age(birth_date: date) -> int:
     today = date.today()

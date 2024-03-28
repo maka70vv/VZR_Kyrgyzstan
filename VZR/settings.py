@@ -15,8 +15,8 @@ import dotenv
 from dotenv import load_dotenv
 from datetime import timedelta
 from pathlib import Path
-load_dotenv()
 
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,7 +33,6 @@ DEBUG = int(os.getenv("DEBUG", default=0))
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
 DJANGO_ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS").split(',')
 ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS
-
 
 # Application definition
 
@@ -90,7 +89,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'VZR.wsgi.application'
 
-CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 CSRF_TRUSTED_ORIGINS = ["http://192.168.0.90:8080", "http://212.112.103.137:6457", "http://0.0.0.0:8000"]
 CORS_ORIGIN_ALLOW_ALL = True
@@ -151,9 +150,6 @@ USE_L10N = False
 
 USE_TZ = True
 
-DATE_INPUT_FORMATS = ['%d.%m.%Y']
-DATE_FORMAT = ['%d.%m.%Y']
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
@@ -161,7 +157,6 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "static"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
-
 
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
 
@@ -219,6 +214,13 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
