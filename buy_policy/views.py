@@ -5,7 +5,7 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from buy_policy.mail import send_notification_on_save
+from buy_policy.mail import send_notification_on_save, send_notification_to_user_on_save
 from buy_policy.models import BuyPolicy
 from buy_policy.serializers import BuyPolicySerializer, CalculatePolicyPriceSerializer
 from buy_policy.services import calculate_insurance_price, save_insurance_price
@@ -30,6 +30,7 @@ class BuyPolicyView(generics.CreateAPIView):
         for item in data:
             serializer = self.get_serializer(data=item)
             serializer.is_valid(raise_exception=True)
+            email = serializer.validated_data['email']
             birth_date = serializer.validated_data.get('birth_date')
             skiing = bool(serializer.validated_data.get('skiing'))
             sport_activities = bool(serializer.validated_data.get('sport_activities'))
@@ -61,6 +62,7 @@ class BuyPolicyView(generics.CreateAPIView):
                 )
                 responses.append(serializer.data)
                 send_notification_on_save(travel_agency.name, email_users)
+                send_notification_to_user_on_save(email, calculate['price_kgs'])
             except ValueError as e:
                 responses.append({"message": str(e)})
 

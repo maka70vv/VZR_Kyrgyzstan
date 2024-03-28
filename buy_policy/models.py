@@ -39,6 +39,7 @@ class BuyPolicy(models.Model):
     dangerous_activities = models.BooleanField(verbose_name="занятие опасными видами деятельности", default=False)
     is_lapsed = models.BooleanField(verbose_name="Испорчен", default=False)
     sale_date = models.DateField(verbose_name="Дата продажи", null=True, blank=True, auto_now_add=True)
+    reported = models.BooleanField(verbose_name="Включен в отчет", default=False)
 
     def __str__(self):
         return self.customer_inn

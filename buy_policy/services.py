@@ -72,7 +72,7 @@ def calculate_price_with_taxes(price: float, taxes: float) -> float:
 
 
 def calculate_commission_summ(price: float, commission: int) -> float:
-    commission_summ = round(price * (commission / 2), 2)
+    commission_summ = round(price * (commission / 100), 2)
     return commission_summ
 
 

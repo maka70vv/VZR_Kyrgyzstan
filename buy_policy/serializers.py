@@ -8,6 +8,7 @@ class BuyPolicySerializer(serializers.ModelSerializer):
     class Meta:
         model = BuyPolicy
         fields = '__all__'
+        extra_kwargs = {'reported': {'write_only': True}}
 
 
 class CalculatePolicyPriceSerializer(serializers.Serializer):
