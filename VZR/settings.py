@@ -38,6 +38,7 @@ ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS
 
 INSTALLED_APPS = [
     'mail_users',
+    'reports',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

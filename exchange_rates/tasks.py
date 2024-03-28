@@ -10,8 +10,6 @@ from exchange_rates.models import DailyExchangeRates
 
 @shared_task
 def get_exchange_rates():
-    print("OK")
-
     response = requests.get('https://www.nbkr.kg/XML/daily.xml')
 
     if response.status_code == 200:
