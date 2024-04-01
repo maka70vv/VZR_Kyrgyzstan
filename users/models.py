@@ -9,4 +9,4 @@ class User(AbstractUser):
     travel_agency = models.ForeignKey(TravelAgency, on_delete=models.CASCADE, verbose_name="Туркомпания", null=True, blank=True)
 
     def __str__(self):
-        return self.inn
+        return str(self.inn)

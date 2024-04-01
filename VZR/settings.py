@@ -155,10 +155,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "/static/"
+STATIC_URL = "/travel_agency/static/"
 STATIC_ROOT = BASE_DIR / "static"
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/travel_agency/media/"
+MEDIA_ROOT = "/var/vzrFiles"
 
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
 

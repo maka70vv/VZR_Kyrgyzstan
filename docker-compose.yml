@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  vzr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: gunicorn VZR.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/home/skk/vzr/static
+      - media_volume:/var/vzrFiles
+    expose:
+      - 7000
+    env_file:
+      - ./.env
+
+    depends_on:
+      - db_vzr
+  db_vzr:
+    image: postgres:14.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/14/main
+    env_file:
+      - ./.env.prod.db
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/home/skk/vzr/static
+      - media_volume:/var/vzrFiles
+
+    ports:
+      - "8080:80"
+    depends_on:
+      - vzr
+    restart: on-failure
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
