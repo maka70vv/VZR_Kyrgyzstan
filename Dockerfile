@@ -29,6 +29,9 @@ RUN pip install gunicorn
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /home/skk/vzr/wheels -r requirements.txt
 
+# Install psycopg2
+RUN pip install psycopg2-binary
+
 
 #########
 # FINAL #
@@ -59,12 +62,6 @@ RUN apk update && apk add libpq
 COPY --from=builder /home/skk/vzr/wheels /wheels
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 COPY --from=builder /usr/local/bin/gunicorn /usr/local/bin/gunicorn
-COPY --from=builder /usr/local/bin/gunicorn /usr/local/bin/gunicorn
-COPY --from=builder /usr/local/bin/gunicorn /usr/local/bin/gunicorn
-COPY --from=builder /usr/local/bin/gunicorn /usr/local/bin/gunicorn
-COPY --from=builder /usr/local/bin/gunicorn /usr/local/bin/gunicorn
-COPY --from=builder /usr/local/bin/gunicorn /usr/local/bin/gunicorn
-COPY --from=builder /usr/local/bin/gunicorn /usr/local/bin/gunicorn
 COPY --from=builder /home/skk/vzr/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
@@ -77,8 +74,7 @@ RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 # copy project
 COPY . $APP_HOME
 
-# run Celery worker
-CMD celery -A VZR worker -B -l INFO
+
 
 # run entrypoint.prod.sh
 ENTRYPOINT ["/home/skk/vzr/entrypoint.prod.sh"]
