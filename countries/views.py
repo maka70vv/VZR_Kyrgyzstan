@@ -18,8 +18,5 @@ class PriceByCountryListView(generics.ListAPIView):
 
     def get_queryset(self):
         country = self.request.query_params.get('country')
-        try:
-            insurance_summ = PriceByCountry.objects.filter(country=country)
-            return Response({'insurance_summ': insurance_summ}, status=status.HTTP_200_OK)
-        except PriceByCountry.DoesNotExist:
-            return Response({'message': 'Выбрана неверная страна. Повторите ввод'}, status=status)
+        queryset = PriceByCountry.objects.filter(country=country)
+        return queryset

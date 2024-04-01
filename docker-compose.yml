@@ -22,6 +22,10 @@ services:
       - postgres_data:/var/lib/postgresql/14/main
     env_file:
       - ./.env.prod.db
+  redis:
+    image: redis:latest
+    ports:
+      - "6380:6379"
   nginx:
     build: ./nginx
     volumes:
