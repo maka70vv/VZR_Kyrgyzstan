@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'VZR.wsgi.application'
 
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-CSRF_TRUSTED_ORIGINS = ["http://192.168.0.90:8080", "http://212.112.103.137:6457", "http://0.0.0.0:8000"]
+CSRF_TRUSTED_ORIGINS = ["http://192.168.0.90:8080", "http://212.112.103.137:666"]
 CORS_ORIGIN_ALLOW_ALL = True
 
 CRONJOBS = [
@@ -158,7 +158,7 @@ USE_TZ = True
 STATIC_URL = "/travel_agency/static/"
 STATIC_ROOT = BASE_DIR / "static"
 MEDIA_URL = "/travel_agency/media/"
-MEDIA_ROOT = "/var/vzrFiles"
+MEDIA_ROOT = BASE_DIR / "media"
 
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
 

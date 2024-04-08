@@ -41,11 +41,11 @@ def generate_report():
         with open(invoice_file, 'rb') as f:
             invoice.file.save(invoice_file, ContentFile(f.read()), save=True)
 
-        os.remove(report_file)
-        os.remove(invoice_file)
+        # os.remove(report_file)
+        # os.remove(invoice_file)
 
-        report_urls.append(f'localhost:8000{report.file.url}')
+        report_urls.append(f'https://api.insurance.kg{report.file.url}')
 
-        invoices.append(f'localhost:8000{invoice.file.url}')
+        invoices.append(f'https://api.insurance.kg{invoice.file.url}')
 
     send_reports(today, report_urls, mail_users, invoices)

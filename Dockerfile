@@ -51,9 +51,7 @@ ENV HOME=/home/skk
 ENV APP_HOME=/home/skk/vzr
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/static
-RUN mkdir /var/vzrFiles
-
-RUN chmod -R 777 /var/vzrFiles
+RUN mkdir $APP_HOME/media
 
 WORKDIR $APP_HOME
 
