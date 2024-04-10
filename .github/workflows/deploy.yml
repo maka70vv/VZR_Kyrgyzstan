@@ -16,7 +16,7 @@ jobs:
       - name: Set up SSH connection
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Замените на ваш приватный ключ SSH
+          ssh-private-key: ${{ secrets.KEY }}  # Замените на ваш приватный ключ SSH
 
       - name: Copy Dockerfile to server
         run: scp Dockerfile ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:./Dockerfile
