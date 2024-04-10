@@ -1,0 +1,38 @@
+name: Deploy Django App
+
+on:
+  push:
+    branches:
+      - master  # Настройте ветку, с которой вы хотите проводить деплой
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Используем Ubuntu для выполнения задач
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2  # Загружаем репозиторий для выполнения действий
+
+      - name: Set up SSH connection
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Замените на ваш приватный ключ SSH
+
+      - name: Copy Dockerfile to server
+        run: scp Dockerfile ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:./Dockerfile
+        # Замените Dockerfile на путь к вашему Dockerfile в репозитории
+
+      - name: Copy docker-compose.prod.yml to server
+        run: scp docker-compose.prod.yml ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:./docker-compose.yml
+        # Аналогично замените docker-compose.prod.yml на ваш путь
+
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}  # Замените на адрес вашего сервера
+          username: ${{ secrets.SSH_USERNAME }}  # Замените на ваше имя пользователя
+          key: ${{ secrets.KEY }}  # Замените на ваш приватный ключ SSH
+          script: |
+            cd /home/skk/vzr  # Переходим в папку на сервере
+            docker-compose build  # Собираем Docker образ
+            docker-compose up -d  # Запускаем контейнер в фоновом режиме
