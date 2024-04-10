@@ -3,7 +3,7 @@ name: Deploy Django App
 on:
   push:
     branches:
-      - master  # Настройте ветку, с которой вы хотите проводить деплой
+      - master
 
 jobs:
   deploy:
