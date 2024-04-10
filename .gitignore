@@ -6,3 +6,4 @@ db.sqlite3
 media
 .env.prod.db
 .env.prod
+venv
