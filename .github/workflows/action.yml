@@ -3,7 +3,7 @@ run-name: ${{github.actor}} started GitHub Actions Task
 on: push
 jobs:
   testing:
-    runs-on: alpine-latest
+    runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
