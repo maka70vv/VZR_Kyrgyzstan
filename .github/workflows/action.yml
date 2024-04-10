@@ -1,0 +1,25 @@
+name: VZR CI/CD
+run-name: ${{github.actor}} started GitHub Actions Task
+on: push
+jobs:
+  testing:
+    runs-on: alpine-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ['3.8', '3.9', '3.10']
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v3
+      - name: Set up Python ${{matrix.python-version}}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{matrix.python-version}}
+      - name: install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run Tests
+        run: |
+          echo "SECRET_KEY = 'djamgo-insecure-dummy-secret'" > ./.env
+          python3 manage.py test
