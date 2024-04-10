@@ -64,15 +64,4 @@ COPY --from=builder /home/skk/vzr/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
-# copy entrypoint.prod.sh
-COPY ./entrypoint.prod.sh .
-RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
-RUN chmod +x  $APP_HOME/entrypoint.prod.sh
-
-# copy project
 COPY . $APP_HOME
-
-
-
-# run entrypoint.prod.sh
-ENTRYPOINT ["/home/skk/vzr/entrypoint.prod.sh"]
