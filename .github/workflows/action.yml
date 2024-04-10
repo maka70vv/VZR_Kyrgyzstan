@@ -1,5 +1,5 @@
 name: VZR CI/CD
-run-name: ${{github.actor}} started GitHub Actions Task
+run-name: ${{github.actor}} VZR CI/CD
 on: push
 jobs:
   testing:
@@ -21,4 +21,6 @@ jobs:
           pip install -r requirements.txt
       - name: Run Tests
         run: |
+          python3 manage.py makemigrations
+          python3 manage.py migrate
           python3 manage.py test
