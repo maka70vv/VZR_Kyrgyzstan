@@ -21,5 +21,4 @@ jobs:
           pip install -r requirements.txt
       - name: Run Tests
         run: |
-          echo "SECRET_KEY = 'djamgo-insecure-dummy-secret'" > ./.env
           python3 manage.py test
