@@ -22,6 +22,11 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}  # Замените на свои значения из секретов GitHub
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Download .env.prod from the server
+        run: scp ${{secrets.SSH_HOST}}@${{secrets.SSH_USERNAME}}:/home/skk/vzr/.env.prod .
+      - name: Download .env.prod.db from the server
+        run: scp ${{secrets.SSH_HOST}}@${{secrets.SSH_USERNAME}}:/home/skk/vzr/.env.prod.db .
+
       - name: Build Docker Image
         run: docker-compose -f docker-compose.yml build  # Сборка Docker образа
 
