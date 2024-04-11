@@ -23,9 +23,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Download .env.prod from the server
-        run: scp -P ${{secrets.SSH_PORT}} ${{secrets.SSH_HOST}}@${{secrets.SSH_USERNAME}}:/home/skk/vzr/.env.prod .
+        run: scp -P ${{secrets.SSH_PORT}} ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}}:/home/skk/vzr/.env.prod .
       - name: Download .env.prod.db from the server
-        run: scp -P ${{secrets.SSH_PORT}} ${{secrets.SSH_HOST}}:$@${{secrets.SSH_USERNAME}}:/home/skk/vzr/.env.prod.db .
+        run: scp -P ${{secrets.SSH_PORT}} ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}}:/home/skk/vzr/.env.prod.db .
 
       - name: Build Docker Image
         run: docker-compose -f docker-compose.yml build  # Сборка Docker образа
@@ -37,7 +37,7 @@ jobs:
       - name: SSH Deploy
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SSH_HOST }}  # Замените на адрес вашего сервера
+          host: ${{ secrets.SSH_HOST }} -P ${{secrets.SSH_PORT}}  # Замените на адрес вашего сервера
           username: ${{ secrets.SSH_USERNAME }}  # Замените на ваше имя пользователя
           key: ${{ secrets.KEY }}  # Замените на ваш приватный ключ SSH
           script: |
