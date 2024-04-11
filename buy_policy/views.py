@@ -32,9 +32,7 @@ class BuyPolicyView(generics.CreateAPIView):
             serializer.is_valid(raise_exception=True)
             email = serializer.validated_data['email']
             birth_date = serializer.validated_data.get('birth_date')
-            skiing = bool(serializer.validated_data.get('skiing'))
-            sport_activities = bool(serializer.validated_data.get('sport_activities'))
-            dangerous_activities = bool(serializer.validated_data.get('dangerous_activities'))
+            risks = serializer.validated_data.get('risks')
             insurance_summ = serializer.validated_data.get('insurance_summ')
             start_date = serializer.validated_data.get('start_date')
             end_date = serializer.validated_data.get('end_date')
@@ -45,7 +43,7 @@ class BuyPolicyView(generics.CreateAPIView):
             insured = len(data)
 
             try:
-                calculate = save_insurance_price(birth_date, skiing, sport_activities, dangerous_activities,
+                calculate = save_insurance_price(birth_date, risks,
                                                  start_date, end_date, insurance_summ, exchange_rates, insured,
                                                  travel_agency_commission)
 
@@ -81,16 +79,14 @@ class CalculatePriceView(generics.CreateAPIView):
 
         for data in serializer.validated_data:
             birth_date = data.get('birth_date')
-            skiing = bool(data.get('skiing'))
-            sport_activities = bool(data.get('sport_activities'))
-            dangerous_activities = bool(data.get('dangerous_activities'))
+            risks = data.get('risks')
             insurance_summ = data.get('insurance_summ')
             start_date = data.get('start_date')
             end_date = data.get('end_date')
             try:
                 exchange_rates = DailyExchangeRates.objects.get(date=date.today())
                 insurance_summ = PriceByCountry.objects.get(pk=insurance_summ)
-                price = calculate_insurance_price(birth_date, skiing, sport_activities, dangerous_activities,
+                price = calculate_insurance_price(birth_date, risks,
                                                   start_date,
                                                   end_date, insurance_summ, exchange_rates, insured)
 

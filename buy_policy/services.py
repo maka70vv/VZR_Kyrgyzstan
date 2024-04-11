@@ -9,7 +9,7 @@ def calculate_age(birth_date: date) -> int:
     return age
 
 
-def calculate_coefficient(age: int, skiing: bool, sport_activities: bool, dangerous_activities: bool,
+def calculate_coefficient(age: int, risks,
                           insured: int) -> float:
     if 60 <= age < 65 or 2 <= age < 3:
         coefficient = 2
@@ -21,13 +21,8 @@ def calculate_coefficient(age: int, skiing: bool, sport_activities: bool, danger
         coefficient = 0.85
     else:
         coefficient = 1
-
-    if skiing:
-        coefficient *= 2
-    if sport_activities or dangerous_activities:
-        coefficient *= 2.5
-    if insured >= 7:
-        coefficient *= 0.90
+    if risks:
+        coefficient *= risks.percent
 
     return coefficient
 
@@ -81,10 +76,10 @@ def calculate_profit(price: float, commission_summ: float) -> float:
     return profit_summ
 
 
-def save_insurance_price(birth_date: date, skiing: bool, sport_activities: bool, dangerous_activities: bool,
+def save_insurance_price(birth_date: date, risks,
                          start_date: date, end_date: date, insurance_summ, exchange_rates, insured, commission) -> float:
     age = calculate_age(birth_date)
-    coefficient = calculate_coefficient(age, skiing, sport_activities, dangerous_activities, insured)
+    coefficient = calculate_coefficient(age, risks, insured)
     validity_period = (end_date - start_date).days
     price = calculate_price(validity_period, coefficient, insurance_summ)
     price_kgs = convert_to_kgs(price, insurance_summ, exchange_rates)
@@ -106,10 +101,10 @@ def save_insurance_price(birth_date: date, skiing: bool, sport_activities: bool,
     return prices
 
 
-def calculate_insurance_price(birth_date: date, skiing: bool, sport_activities: bool, dangerous_activities: bool,
+def calculate_insurance_price(birth_date: date, risks,
                               start_date: date, end_date: date, insurance_summ, exchange_rates, insured) -> float:
     age = calculate_age(birth_date)
-    coefficient = calculate_coefficient(age, skiing, sport_activities, dangerous_activities, insured)
+    coefficient = calculate_coefficient(age, risks, insured)
     validity_period = (end_date - start_date).days
     price = calculate_price(validity_period, coefficient, insurance_summ)
     price_kgs = convert_to_kgs(price, insurance_summ, exchange_rates)

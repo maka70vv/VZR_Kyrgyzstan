@@ -1,10 +1,12 @@
 from django.db import models
 
 from countries.models import Country, PriceByCountry
+from discounts.models import AdditionalRisks
 from travel_agency.models import TravelAgency
 
 
 class BuyPolicy(models.Model):
+    policy_id = models.BigIntegerField(primary_key=True, unique=True, editable=False, db_index=True)
     customer_inn = models.CharField(max_length=14, verbose_name="ИНН клиента")
     passport_series_num = models.CharField(max_length=16, verbose_name="Серия и номер паспорта")
     sex = models.CharField(max_length=7, verbose_name="Пол", choices=(("1", "Мужской"), ("2", "Женский")))
@@ -33,10 +35,11 @@ class BuyPolicy(models.Model):
     commission_summ = models.DecimalField(verbose_name="Сумма комиссии", decimal_places=2, max_digits=10, default=0)
     profit_summ = models.DecimalField(verbose_name="Сумма дохода СК", decimal_places=2, max_digits=10, default=0)
     travel_agency = models.ForeignKey(TravelAgency, on_delete=models.SET_NULL, null=True, verbose_name="Тур. агенство")
-    skiing = models.BooleanField(verbose_name="занятие горнолыжным спортом", default=False)
-    sport_activities = models.BooleanField(verbose_name="занятие профессиональным или любительским спортом",
-                                           default=False)
-    dangerous_activities = models.BooleanField(verbose_name="занятие опасными видами деятельности", default=False)
+    # skiing = models.BooleanField(verbose_name="занятие горнолыжным спортом", default=False)
+    # sport_activities = models.BooleanField(verbose_name="занятие профессиональным или любительским спортом",
+    #                                        default=False)
+    risks = models.ManyToManyField(AdditionalRisks, verbose_name="Риски", blank=True)
+    # dangerous_activities = models.BooleanField(verbose_name="занятие опасными видами деятельности", default=False)
     is_lapsed = models.BooleanField(verbose_name="Испорчен", default=False)
     sale_date = models.DateField(verbose_name="Дата продажи", null=True, blank=True, auto_now_add=True)
     reported = models.BooleanField(verbose_name="Включен в отчет", default=False)

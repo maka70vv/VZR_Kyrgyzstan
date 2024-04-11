@@ -1,5 +1,7 @@
 from datetime import date
 from django.test import TestCase
+
+from discounts.models import AdditionalRisks
 from exchange_rates.models import DailyExchangeRates
 from countries.models import PriceByCountry, Country
 from buy_policy.services import (
@@ -34,7 +36,8 @@ class TestUtilsFunctions(TestCase):
         self.assertEqual(age, 34)  # Проверяем, что возраст вычисляется корректно
 
     def test_calculate_coefficient(self):
-        coefficient = calculate_coefficient(30, skiing=True, sport_activities=False, dangerous_activities=False,
+        risks = AdditionalRisks.objects.create(name="Test Risk", percent=2, crm_id=1)
+        coefficient = calculate_coefficient(30, risks,
                                             insured=5)
         self.assertEqual(coefficient, 2)  # Проверяем, что коэффициент вычисляется корректно
 
@@ -63,20 +66,21 @@ class TestUtilsFunctions(TestCase):
         self.assertEqual(profit, 90)  # Проверяем, что прибыль вычисляется корректно
 
     def test_save_insurance_price(self):
-        prices = save_insurance_price(self.birth_date, skiing=True, sport_activities=False, dangerous_activities=False,
+        risks = AdditionalRisks.objects.create(name="Test Risk", percent=4, crm_id=1)
+        prices = save_insurance_price(self.birth_date, risks,
                                       start_date=self.start_date, end_date=self.end_date,
                                       insurance_summ=self.insurance_summ,
                                       exchange_rates=self.exchange_rates, insured=self.insured,
                                       commission=self.commission)
         self.assertEqual(prices['age'], 34)  # Проверяем, что возраст сохраняется корректно
-        self.assertEqual(prices['price_kgs'], 4680)  # Проверяем, что цена в KGS сохраняется корректно
-        self.assertEqual(prices['price_exchange'], 4680)  # Проверяем, что цена в валюте сохраняется корректно
+        self.assertEqual(prices['price_kgs'], 9360)  # Проверяем, что цена в KGS сохраняется корректно
+        self.assertEqual(prices['price_exchange'], 9360)  # Проверяем, что цена в валюте сохраняется корректно
 
     def test_calculate_insurance_price(self):
-        prices = calculate_insurance_price(self.birth_date, skiing=True, sport_activities=False,
-                                           dangerous_activities=False,
+        risks = AdditionalRisks.objects.create(name="Test Risk", percent=4, crm_id=1)
+        prices = calculate_insurance_price(self.birth_date, risks,
                                            start_date=self.start_date, end_date=self.end_date,
                                            insurance_summ=self.insurance_summ,
                                            exchange_rates=self.exchange_rates, insured=self.insured)
-        self.assertEqual(prices['price_kgs'], 4680)  # Проверяем, что цена в KGS вычисляется корректно
-        self.assertEqual(prices['price_exchange'], 4680)  # Проверяем, что цена в валюте вычисляется корректно
+        self.assertEqual(prices['price_kgs'], 9360)  # Проверяем, что цена в KGS вычисляется корректно
+        self.assertEqual(prices['price_exchange'], 9360)  # Проверяем, что цена в валюте вычисляется корректно

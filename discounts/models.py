@@ -7,3 +7,12 @@ class Discount(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class AdditionalRisks(models.Model):
+    name = models.CharField(max_length=255, verbose_name="Название риска")
+    percent = models.IntegerField(verbose_name="Повышающий коэффициент", default=0)
+    crm_id = models.IntegerField(verbose_name="ID в CRM")\
+
+    def __str__(self):
+        return self.name
