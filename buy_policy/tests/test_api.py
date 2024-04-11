@@ -5,6 +5,7 @@ from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 
 from countries.models import PriceByCountry, Country
+from discounts.models import AdditionalRisks
 from exchange_rates.models import DailyExchangeRates
 from travel_agency.models import TravelAgency
 from users.models import User
@@ -26,6 +27,7 @@ class BuyPolicyAPITests(APITestCase):
         return str(access)
 
     def test_create_buy_policy(self):
+        risks = AdditionalRisks.objects.create(name="Test Risk", percent=2, crm_id=1)
         data = [{
             "customer_inn": "373298287",
             "passport_series_num": "string",
@@ -40,9 +42,7 @@ class BuyPolicyAPITests(APITestCase):
             "start_date": "2024-09-24",
             "end_date": "2024-09-25",
             "purpose": "1",
-            "skiing": False,
-            "sport_activities": False,
-            "dangerous_activities": False,
+            "risks": 2,
             "territory_and_currency": 1,
             "insurance_summ": 1
         }]
