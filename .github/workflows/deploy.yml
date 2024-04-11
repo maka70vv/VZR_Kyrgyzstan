@@ -64,7 +64,8 @@ jobs:
       - name: SSH Deploy
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SSH_HOST }} -P ${{secrets.SSH_PORT}}  # Замените на адрес вашего сервера
+          host: ${{ secrets.SSH_HOST }}   # Замените на адрес вашего сервера
+          port: ${{secrets.SSH_PORT}}
           username: ${{ secrets.SSH_USERNAME }}  # Замените на ваше имя пользователя
           key: ${{ secrets.KEY }}  # Замените на ваш приватный ключ SSH
           script: |
