@@ -1,6 +1,9 @@
 name: VZR CI/CD
 run-name: ${{github.actor}} VZR CI/CD
-on: push
+on:
+  push:
+    branches:
+      - development
 jobs:
   testing:
     runs-on: ubuntu-latest
