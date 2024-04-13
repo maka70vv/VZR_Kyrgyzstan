@@ -57,9 +57,6 @@ jobs:
       - name: Build Docker Image
         run: docker-compose -f docker-compose.yml build  # Сборка Docker образа
 
-      - name: Docker Scout
-        run: docker scout quickview
-
       - name: Tag Docker Image
         run: docker tag vzr_vzr ${{ secrets.DOCKER_USERNAME }}/vzr:latest
 
