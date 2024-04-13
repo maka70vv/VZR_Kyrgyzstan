@@ -74,4 +74,4 @@ jobs:
           script: |
             cd /home/skk/vzr  # Переходим в папку на сервере
             docker-compose pull  # Получаем обновленный образ
-            docker-compose up -d  # Запускаем контейнер в фоновом режиме
+            docker-compose -f docker-compose.prod.yml up -d  # Запускаем контейнер в фоновом режиме

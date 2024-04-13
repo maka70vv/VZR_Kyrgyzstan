@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
   vzr:
-    image: vzr:latest
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
+#    image: vzr:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: gunicorn VZR.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/home/skk/vzr/static
