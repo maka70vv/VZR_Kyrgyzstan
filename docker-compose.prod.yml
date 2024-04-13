@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   vzr:
-    image: vzr:latest
+    image: maka7wx/vzr:latest
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
