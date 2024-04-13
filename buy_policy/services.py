@@ -22,7 +22,9 @@ def calculate_coefficient(age: int, risks,
     else:
         coefficient = 1
     if risks:
-        coefficient *= risks.percent
+        for risk in risks:
+            risk_percent = risk.percent  # Получаем процент риска из каждого элемента списка
+            coefficient *= risk_percent
 
     return coefficient
 
@@ -77,7 +79,8 @@ def calculate_profit(price: float, commission_summ: float) -> float:
 
 
 def save_insurance_price(birth_date: date, risks,
-                         start_date: date, end_date: date, insurance_summ, exchange_rates, insured, commission) -> float:
+                         start_date: date, end_date: date, insurance_summ, exchange_rates, insured,
+                         commission) -> float:
     age = calculate_age(birth_date)
     coefficient = calculate_coefficient(age, risks, insured)
     validity_period = (end_date - start_date).days

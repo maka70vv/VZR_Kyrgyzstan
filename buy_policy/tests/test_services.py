@@ -37,7 +37,9 @@ class TestUtilsFunctions(TestCase):
 
     def test_calculate_coefficient(self):
         risks = AdditionalRisks.objects.create(name="Test Risk", percent=2, crm_id=1)
-        coefficient = calculate_coefficient(30, risks,
+        risk_list = [risks]
+
+        coefficient = calculate_coefficient(30, risk_list,
                                             insured=5)
         self.assertEqual(coefficient, 2)  # Проверяем, что коэффициент вычисляется корректно
 
@@ -67,7 +69,8 @@ class TestUtilsFunctions(TestCase):
 
     def test_save_insurance_price(self):
         risks = AdditionalRisks.objects.create(name="Test Risk", percent=4, crm_id=1)
-        prices = save_insurance_price(self.birth_date, risks,
+        risk_list = [risks]
+        prices = save_insurance_price(self.birth_date, risk_list,
                                       start_date=self.start_date, end_date=self.end_date,
                                       insurance_summ=self.insurance_summ,
                                       exchange_rates=self.exchange_rates, insured=self.insured,
@@ -78,7 +81,9 @@ class TestUtilsFunctions(TestCase):
 
     def test_calculate_insurance_price(self):
         risks = AdditionalRisks.objects.create(name="Test Risk", percent=4, crm_id=1)
-        prices = calculate_insurance_price(self.birth_date, risks,
+        risk_list = [risks]
+
+        prices = calculate_insurance_price(self.birth_date, risk_list,
                                            start_date=self.start_date, end_date=self.end_date,
                                            insurance_summ=self.insurance_summ,
                                            exchange_rates=self.exchange_rates, insured=self.insured)

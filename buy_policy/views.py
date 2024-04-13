@@ -46,8 +46,10 @@ class BuyPolicyView(generics.CreateAPIView):
                 calculate = save_insurance_price(birth_date, risks,
                                                  start_date, end_date, insurance_summ, exchange_rates, insured,
                                                  travel_agency_commission)
+                id = 1
 
                 serializer.save(
+                    policy_id=id,
                     price_exchange=Decimal(calculate['price_exchange']),
                     price_with_taxes_kgs=Decimal(calculate['price_kgs']),
                     taxes_summ=Decimal(calculate['taxes_summ']),

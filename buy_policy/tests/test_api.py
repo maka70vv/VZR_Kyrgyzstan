@@ -27,7 +27,7 @@ class BuyPolicyAPITests(APITestCase):
         return str(access)
 
     def test_create_buy_policy(self):
-        risks = AdditionalRisks.objects.create(name="Test Risk", percent=2, crm_id=1)
+        AdditionalRisks.objects.create(name="Test Risk", percent=2, crm_id=1)
         data = [{
             "customer_inn": "373298287",
             "passport_series_num": "string",
@@ -42,7 +42,7 @@ class BuyPolicyAPITests(APITestCase):
             "start_date": "2024-09-24",
             "end_date": "2024-09-25",
             "purpose": "1",
-            "risks": 2,
+            "risks": [1],
             "territory_and_currency": 1,
             "insurance_summ": 1
         }]
@@ -50,9 +50,9 @@ class BuyPolicyAPITests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
         response = self.client.post(url, data, format='json')
 
-        self.assertEqual(float(response.data[0]['price_with_taxes_kgs']), 130)
-        self.assertEqual(float(response.data[0]['price_without_taxes_kgs']), 100)
-        self.assertEqual(float(response.data[0]['commission_summ']), 10)
-        self.assertEqual(float(response.data[0]['profit_summ']), 90)
-        self.assertEqual(float(response.data[0]['price_exchange']), 130)
-        self.assertEqual(float(response.data[0]['taxes_summ']), 30)
+        self.assertEqual(float(response.data[0]['price_with_taxes_kgs']), 260)
+        self.assertEqual(float(response.data[0]['price_without_taxes_kgs']), 200)
+        self.assertEqual(float(response.data[0]['commission_summ']), 20)
+        self.assertEqual(float(response.data[0]['profit_summ']), 180)
+        self.assertEqual(float(response.data[0]['price_exchange']), 260)
+        self.assertEqual(float(response.data[0]['taxes_summ']), 60)
