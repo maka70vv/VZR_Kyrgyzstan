@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  vzr:
+    image: vzr:latest
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+    command: gunicorn VZR.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/home/skk/vzr/static
+      - media_volume:/var/vzrFiles
+    expose:
+      - 7000
+    env_file:
+      - ./.env.prod
+
+    depends_on:
+      - db_vzr
+  db_vzr:
+    image: postgres:14.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/14/main
+    env_file:
+      - ./.env.prod.db
+  redis:
+    image: redis:latest
+    ports:
+      - "6380:6379"
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/home/skk/vzr/static
+      - media_volume:/var/vzrFiles
+
+    ports:
+      - "8080:80"
+    depends_on:
+      - vzr
+    restart: on-failure
+
+
+  celery:
+    build: .
+    command: celery -A VZR worker -B -l INFO
+    volumes:
+      - .:/home/skk/vzr
+    env_file:
+      - .env.prod
+    depends_on:
+      - db_vzr
+      - redis
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
