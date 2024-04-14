@@ -37,7 +37,7 @@ class BuyPolicy(models.Model):
     commission_summ = models.DecimalField(verbose_name="Сумма комиссии", decimal_places=2, max_digits=10, default=0)
     profit_summ = models.DecimalField(verbose_name="Сумма дохода СК", decimal_places=2, max_digits=10, default=0)
     travel_agency = models.ForeignKey(TravelAgency, on_delete=models.SET_NULL, null=True, verbose_name="Тур. агенство")
-    Travel_agency_worker = models.ForeignKey(User, verbose_name="Сотрудник турагенства", on_delete=models.SET_NULL,
+    travel_agency_worker = models.ForeignKey(User, verbose_name="Сотрудник турагенства", on_delete=models.SET_NULL,
                                              null=True, blank=True)
     risks = models.ManyToManyField(AdditionalRisks, verbose_name="Риски", blank=True)
     is_lapsed = models.BooleanField(verbose_name="Испорчен", default=False)

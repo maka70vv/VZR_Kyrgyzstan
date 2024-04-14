@@ -37,7 +37,8 @@ def send_policy(policy, **kwargs):
         risk_ids = [risk.crm_id for risk in policy.risks.all()]
         data["additional_info"] = risk_ids
 
+    url = "http://192.168.0.38/api_business/travel/"
+    # response = requests.post(url, json=data)
+
     return data
 
-    # url = "http://192.168.0.38/api_business/"
-    # response = requests.post()

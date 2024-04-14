@@ -102,8 +102,11 @@ class PoliciesByTravelAgencyView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        travel_agency = self.request.user.travel_agency
-        return BuyPolicy.objects.filter(travel_agency=travel_agency)
+        if self.request.user.is_travel_agency_staff:
+            travel_agency = self.request.user.travel_agency
+            return BuyPolicy.objects.filter(travel_agency=travel_agency)
+        else:
+            return BuyPolicy.objects.filter(travel_agency_worker=self.request.user)
 
 
 class DestroyPolicyView(generics.UpdateAPIView):
