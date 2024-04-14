@@ -5,6 +5,7 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from buy_policy.integration import send_policy
 from mail_users.mail import send_notification_on_save, send_notification_to_user_on_save
 from buy_policy.models import BuyPolicy
 from buy_policy.serializers import BuyPolicySerializer, CalculatePolicyPriceSerializer
@@ -46,10 +47,7 @@ class BuyPolicyView(generics.CreateAPIView):
                 calculate = save_insurance_price(birth_date, risks,
                                                  start_date, end_date, insurance_summ, exchange_rates, insured,
                                                  travel_agency_commission)
-                id = 1
-
-                serializer.save(
-                    policy_id=id,
+                policy = serializer.save(
                     price_exchange=Decimal(calculate['price_exchange']),
                     price_with_taxes_kgs=Decimal(calculate['price_kgs']),
                     taxes_summ=Decimal(calculate['taxes_summ']),
@@ -63,6 +61,7 @@ class BuyPolicyView(generics.CreateAPIView):
                 responses.append(serializer.data)
                 send_notification_on_save(travel_agency.name, email_users)
                 send_notification_to_user_on_save(email, calculate['price_kgs'])
+                send_policy(policy)
             except ValueError as e:
                 responses.append({"message": str(e)})
 
