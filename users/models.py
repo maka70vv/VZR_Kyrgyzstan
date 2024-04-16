@@ -10,4 +10,4 @@ class User(AbstractUser):
     is_travel_agency_staff = models.BooleanField(default=False, verbose_name="Администратор туркомпании")
 
     def __str__(self):
-        return str(self.inn)
+        return self.inn

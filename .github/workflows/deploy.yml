@@ -27,20 +27,20 @@ jobs:
         with:
           envkey_DEBUG: 1
           envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          envkey_DJANGO_ALLOWED_HOSTS: '*'
-          envkey_EMAIL_BACKEND: 'django.core.mail.backends.smtp.EmailBackend'
+          envkey_DJANGO_ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+          envkey_EMAIL_BACKEND: ${{ secrets.EMAIL_BACKEND }}
           envkey_EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
-          envkey_EMAIL_PORT: '25'
-          envkey_EMAIL_HOST_USER: 'noreply@insurance.kg'
+          envkey_EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+          envkey_EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
           envkey_EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
-          envkey_DEFAULT_FROM_EMAIL: 'noreply@insurance.kg'
-          envkey_SQL_ENGINE: 'django.db.backends.postgresql'
+          envkey_DEFAULT_FROM_EMAIL: ${{ secrets.EMAIL_HOST_USER }}
+          envkey_SQL_ENGINE: ${{ secrets.SQL_ENGINE }}
           envkey_SQL_DATABASE: ${{ secrets.DATABASE }}
           envkey_SQL_USER: ${{ secrets.SQL_USER }}
           envkey_SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
-          envkey_SQL_HOST: 'db_vzr'
-          envkey_SQL_PORT: '5432'
-          envkey_DATABASE: 'postgres'
+          envkey_SQL_HOST: ${{ secrets.SQL_HOST }}
+          envkey_SQL_PORT: ${{ secrets.SQL_PORT }}
+          envkey_DATABASE: ${{ secrets.DATABASE_CONFIG }}
           file_name: .env.prod
           fail_on_empty: false
           sort_keys: false
