@@ -9,5 +9,3 @@ class User(AbstractUser):
     travel_agency = models.ForeignKey(TravelAgency, on_delete=models.CASCADE, verbose_name="Туркомпания", null=True, blank=True)
     is_travel_agency_staff = models.BooleanField(default=False, verbose_name="Администратор туркомпании")
 
-    def __str__(self):
-        return self.inn
